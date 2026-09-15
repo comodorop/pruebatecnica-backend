@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Las migraciones usan conexión directa (sin pooler): el pooler de Neon
+  // (PgBouncer en modo transacción) no sostiene los advisory locks que usa
+  // `prisma migrate`. Si DIRECT_URL no está definida, Prisma usa `url`.
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
